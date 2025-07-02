@@ -20,6 +20,14 @@ func _process(delta: float) -> void:
 	var playerPosFromCam = player.global_position - global_position
 	var windowSize = get_viewport_rect().size
 	
+	if Input.is_action_just_released("zoomIn"):
+		if zoom.x < 2 :
+			set_zoom(zoom + Vector2(.1,.1))
+	if Input.is_action_just_released("zoomOut"):
+		if zoom.x > 0.3 :
+			set_zoom(zoom - Vector2(.1,.1))
+		
+	
 	if playerPosFromCam.x > windowSize.x/2 * margin :
 		global_position.x += 1
 	if playerPosFromCam.x <  -windowSize.x/2 * margin:
