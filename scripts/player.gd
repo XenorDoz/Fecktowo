@@ -1,6 +1,6 @@
 extends Node2D
 
-var speed = 200 # Move speed
+var speed = 600 # Move speed
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
