@@ -1,0 +1,19 @@
+# Godot 4+ specific ignores
+.godot/
+.android/
+
+# Cache d'importation
+.import/
+
+# Fichiers d'exportation
+export.cfg
+export_presets.cfg
+
+# Logs, temporaires, backups
+*.log
+*.tmp
+*.bak
+
+# Autres fichiers systeme a ignorer
+.DS_Store
+Thumbs.db
