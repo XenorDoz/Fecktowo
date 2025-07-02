@@ -15,3 +15,7 @@ Some stuff to add later:
     - World temperature (biomes with that temp are more likely to spawn)
     - Biome interferences with stuff like craft time or crops maybe, tree..
   - Gamemode
+- Bot logic
+  - Path finding or following path
+  - Auto detect what item to take out from buildings (either what is crafted or what is needed to craft)
+- Missions from NPCs instead of trading, or both but mainly missions, then trades are worth less
