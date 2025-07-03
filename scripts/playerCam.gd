@@ -23,16 +23,18 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_released("zoomIn"):
 		if zoom.x < 2 :
 			set_zoom(zoom + Vector2(.1,.1))
+			global_position = player.global_position
 	if Input.is_action_just_released("zoomOut"):
 		if zoom.x > 0.3 :
 			set_zoom(zoom - Vector2(.1,.1))
 		
+	var cameraSpeed = player.speed * delta
 	
-	if playerPosFromCam.x > windowSize.x/2 * margin :
-		global_position.x += 1
-	if playerPosFromCam.x <  -windowSize.x/2 * margin:
-		global_position.x -= 1
-	if playerPosFromCam.y > windowSize.y/2 * margin :
-		global_position.y += 1
-	if playerPosFromCam.y <  -windowSize.y/2 * margin:
-		global_position.y -= 1
+	if playerPosFromCam.x > windowSize.x/2 * margin / zoom.x :
+		global_position.x += 1 * cameraSpeed
+	elif playerPosFromCam.x <  -windowSize.x/2 * margin / zoom.x :
+		global_position.x -= 1 * cameraSpeed
+	if playerPosFromCam.y > windowSize.y/2 * margin / zoom.y :
+		global_position.y += 1 * cameraSpeed
+	elif playerPosFromCam.y <  -windowSize.y/2 * margin / zoom.y :
+		global_position.y -= 1 * cameraSpeed
