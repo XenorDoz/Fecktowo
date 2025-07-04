@@ -1,55 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://rfafd7f1v52k"]
+[gd_scene load_steps=7 format=3 uid="uid://rfafd7f1v52k"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_1n58j"]
 [ext_resource type="Texture2D" uid="uid://rd5yfdmqeuu3" path="res://assets/sprites/Derg 1024x1024.png" id="2_lg2gn"]
+[ext_resource type="TileSet" uid="uid://c56vpgauhrsp3" path="res://tilesets/background.tres" id="2_wn3gx"]
 [ext_resource type="Script" path="res://scripts/playerCam.gd" id="3_av3pe"]
-[ext_resource type="Texture2D" uid="uid://ctuj8u4hkkg57" path="res://assets/tiles/sand.png" id="4_1o7uu"]
+[ext_resource type="TileSet" uid="uid://bcvf5i2tt5n2m" path="res://tilesets/chunkBorder.tres" id="3_w1uef"]
 [ext_resource type="Script" path="res://scripts/layerHolder.gd" id="4_uolhe"]
-[ext_resource type="Texture2D" uid="uid://cp57kjdhxs0a1" path="res://assets/tiles/water.png" id="5_66klf"]
-[ext_resource type="Texture2D" uid="uid://bjrqstkbp8x3u" path="res://assets/tiles/grass2.png" id="5_egt2e"]
-[ext_resource type="Texture2D" uid="uid://c0vdpjetwumpc" path="res://assets/tiles/stone.png" id="6_fkiej"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hphg5"]
-texture = ExtResource("5_egt2e")
-0:0/0 = 0
-0:0/0/probability = 0.25
-1:0/0 = 0
-1:0/0/probability = 0.25
-0:1/0 = 0
-0:1/0/probability = 0.25
-1:1/0 = 0
-1:1/0/probability = 0.25
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_05nty"]
-texture = ExtResource("6_fkiej")
-0:0/0 = 0
-0:0/0/probability = 0.25
-1:0/0 = 0
-1:0/0/probability = 0.25
-0:1/0 = 0
-0:1/0/probability = 0.25
-1:1/0 = 0
-1:1/0/probability = 0.25
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vwd4"]
-texture = ExtResource("4_1o7uu")
-0:0/0 = 0
-1:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lifxb"]
-texture = ExtResource("5_66klf")
-0:0/0 = 0
-1:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_s3nug"]
-sources/0 = SubResource("TileSetAtlasSource_hphg5")
-sources/1 = SubResource("TileSetAtlasSource_05nty")
-sources/2 = SubResource("TileSetAtlasSource_2vwd4")
-sources/3 = SubResource("TileSetAtlasSource_lifxb")
 
 [node name="MainScene" type="Node2D"]
 
@@ -57,7 +13,10 @@ sources/3 = SubResource("TileSetAtlasSource_lifxb")
 script = ExtResource("4_uolhe")
 
 [node name="background" type="TileMapLayer" parent="layerHolder"]
-tile_set = SubResource("TileSet_s3nug")
+tile_set = ExtResource("2_wn3gx")
+
+[node name="chunkOutline" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("3_w1uef")
 
 [node name="Player" type="Node2D" parent="."]
 scale = Vector2(0.062, 0.062)
