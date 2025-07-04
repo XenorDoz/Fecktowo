@@ -3,6 +3,8 @@ extends Node2D
 # Preloading textures 
 const GRASS = preload("res://assets/tiles/grass2.png")
 const STONE = preload("res://assets/tiles/stone.png")
+const SAND = preload("res://assets/tiles/sand.png")
+const WATER = preload("res://assets/tiles/water.png")
 
 # Waiting for these
 @onready var background: TileMapLayer = $background
@@ -11,12 +13,25 @@ const STONE = preload("res://assets/tiles/stone.png")
 # Var used later
 var chunkPos: Vector2i
 var time = 0.0
-var tileID = 0 # Default tile ID will be grass
+var reg = 0.5
+var tileID = Globals.availableTiles[0] # Default tile 
+
+# Rules of generation
+	# When choosing cell color, if neighbors only have a unique ID
+	# Then this is the number of at least required neighoubrs to
+	# Add every other ID to the ID random pick
+var rule1 = 4
+	# When reevaluating cells, if that amount of neighbors or more
+	# Have the same ID as the current cell, then it'll take
+	# The ID of most of the neighbors
+var rule2 = 6
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	generateWorld(Vector2i(-Globals.loadedChunkDistance*2, -Globals.loadedChunkDistance*2),
-				  Vector2i(Globals.loadedChunkDistance*2, Globals.loadedChunkDistance*2))
+	#seed(1234573756)
+	generateWorld(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
+				  Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance),
+				  5)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -28,75 +43,177 @@ func _process(delta: float) -> void:
 	if prevChunkPos.x != chunkPos.x:
 		if prevChunkPos.x < chunkPos.x : # Player going right
 			generateWorld(Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance),
-						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance))
+						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
+						  1)
 		else : # Player going left
 			generateWorld(Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance),
-						  Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance))
+						  Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
+						  3)
 	if prevChunkPos.y != chunkPos.y:
 		if prevChunkPos.y < chunkPos.y : # Player going down
 			generateWorld(Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
-						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance))
+						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
+						  2)
 		else : # Player going up
 			generateWorld(Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance),
-						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance))
+						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance),
+						  0)
 	
 	time += delta
-	if time >= 1.0 :
-		time = 0
-		#print (chunkPos)
 	
+		
+func generateWorld(from: Vector2i, to: Vector2i, dir : int) -> void:
+	# Generates chunks selecting the direction to use
+	# we check which direction by using dir // 2 for first dir, and dir % 2 for second dir
+	# from = top-left chunk, to = bottom-left chunk
+	# firstDir : 0 = north, 1 = east, 2 = south, 3 = west
+	# secondDir : 0 = west or north, 1 = east or south (depending on firstDir)
 	
+	var step = Vector2i(-(dir-2),(dir-1))
 	
-func generateWorld(from: Vector2i, to: Vector2i) -> void:
-	# Generates chunks
-	print("Generating world from ", from, " to ", to, "...")
+	# Grabbing all chunks needed to change
+	
+	var xChunkRange = customRange(from.x, to.x + 1, 1)
+	var yChunkRange = customRange(from.y, to.y + 1, 1)
+	if step.x == -1 : xChunkRange.reverse()
+	if step.y == -1 : yChunkRange.reverse()
+	
+	var xTileRange = []
+	var yTileRange = []
+	# Acutally modifying them
+	if dir % 2 == 1: # If we generate whole columns
+		for xChunk in xChunkRange:
+			for yChunk in yChunkRange:
+				if background.get_cell_source_id(Vector2i(xChunk * Globals.chunkSize, yChunk * Globals.chunkSize)) == -1:
+					# Chunk has not been generated for now
+					xTileRange = customRange(xChunk * Globals.chunkSize, (xChunk+1) * Globals.chunkSize, 1)
+					yTileRange = customRange(yChunk * Globals.chunkSize, (yChunk+1) * Globals.chunkSize, 1)
+					if step.x == -1 : xTileRange.reverse()
+					if step.y == -1 : yTileRange.reverse()
+					var matChunk = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+					var bwa = 1
+					for xTile in xTileRange:
+						var row = []
+						for yTile in yTileRange:
+							matChunk[yTile%16][xTile%16] = bwa
+							bwa += 1	
+							chooseTileID(xTile,yTile)
+					
+					if time > reg : 
+						print("\n\n\n\n\n")
+						for y in matChunk:
+							print(y)
+					time = 0
+					for xTile in xTileRange:
+						for yTile in yTileRange:
+							applyRules(xTile,yTile)
+	else: # if we generate whole rows
+		for yChunk in yChunkRange:
+			for xChunk in xChunkRange:
+				if background.get_cell_source_id(Vector2i(xChunk * Globals.chunkSize, yChunk * Globals.chunkSize)) == -1:
+					# Chunk has not been generated for now
+					xTileRange = customRange(xChunk * Globals.chunkSize, (xChunk+1) * Globals.chunkSize, 1)
+					yTileRange = customRange(yChunk * Globals.chunkSize, (yChunk+1) * Globals.chunkSize, 1)
+					if step.x == -1 : xTileRange.reverse()
+					if step.y == -1 : yTileRange.reverse()
+					var matChunk = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+					var bwa = 1
+					for yTile in yTileRange:
+						var row = []
+						for xTile in xTileRange:
+							matChunk[yTile%16][xTile%16] = bwa
+							bwa += 1	
+							chooseTileID(xTile,yTile)
+					
+					if time > reg : 
+						print("\n\n\n\n\n")
+						for y in matChunk:
+							print(y)
+					time = 0
+					for yTile in yTileRange:
+						for xTile in xTileRange:
+							applyRules(xTile,yTile)
+	pass
+	
+func customRange(x : int, y : int, step : int) -> Array:
+	var myRange = []
+	if step > 0 :
+		if x > y:
+			print("Can't do range of (%s, %s, %s)" %[x,y,step])
+		else :
+			while x < y:
+				myRange.append(x)
+				x += step
+	else :
+		if x < y:
+			print("Can't do range of (%s, %s, %s)" %[x,y,step])
+		else :
+			while x > y:
+				myRange.append(x)
+				x += step
+	return myRange 
 
-	for chunkY in range (from.y-1, to.y+1, 1):
-		for chunkX in range (from.x-1, to.x+1, 1):
-			if background.get_cell_source_id(Vector2i(chunkX * Globals.chunkSize, chunkY * Globals.chunkSize)) == -1:
-				print("\t\tChunk ", Vector2i(chunkX, chunkY), " detected as unloaded !")
-				
-				for y in range(chunkY * Globals.chunkSize, (chunkY+1) * Globals.chunkSize, 1):
-					for x in range(chunkX * Globals.chunkSize, (chunkX+1) * Globals.chunkSize, 1):
-						
-						# Choosing what type of tile do we want
-						var neighborsID = getNeighbors(x, y)
-						var possibleIds = []
-						if not neighborsID.is_empty() :
-							for id in neighborsID.keys():
-								for i in range(neighborsID[id]):
-									possibleIds.append(id)
-							if neighborsID.keys().size() == 1 and neighborsID[neighborsID.keys()[0]] >= 4:
-								for i in range(Globals.totalTileNumbre): # Add every ID possible to diversify
-									possibleIds.append(i)
-							tileID = possibleIds[randi() % possibleIds.size()]
-						
-						background.set_cell(Vector2i(x, y), tileID,Vector2i(randi_range(0,1),randi_range(0,1)))
-						#set_cell(<cell position> Vector2i, <Tilse set id> Int, <position on atlas> Vector2i)
+func chooseTileID(x : int, y : int) -> void:
+	var neighborsID = getNeighbors(x, y)
+	var possibleIds = []
+	
+	if not neighborsID.is_empty():
+		var totalNeighbors = 0
+		for count in neighborsID.values():
+			totalNeighbors += count
 			
-			# We check again cells to eliminate the ones that are too small
-				for y in range(chunkY * Globals.chunkSize, (chunkY+1) * Globals.chunkSize, 1):
-					for x in range(chunkX * Globals.chunkSize, (chunkX+1) * Globals.chunkSize, 1):
-						var neighborsID = getNeighbors(x, y)
-						
-						# Checking if we have the dictionnary
-						if not neighborsID.is_empty() :
-							# Grabbing ID of the cell and check if neighbors have it too
-							var currentID = background.get_cell_source_id((Vector2i(x,y)))
-							var currentIDCount = 0
-							if neighborsID.has(currentID):
-								currentIDCount = neighborsID[currentID]
-								
-							# If less than 2 neighbors have this ID, then we give the same one as most of them
-							if currentIDCount < 7:
-								var maxCount = 0
-								var majorID = currentID
-								for id in neighborsID.keys():
-									if neighborsID[id] > maxCount:
-										maxCount = neighborsID[id]
-										majorID = id
-									background.set_cell(Vector2i(x,y), majorID, Vector2i(randi_range(0,1),randi_range(0,1)))
+		for i in Globals.totalTileNumber:
+			# Checking neighbors around
+			var id = Globals.availableTiles[i]
+			var globalProb = Globals.tileProbability[i]
+			var neighborCount = neighborsID.get(id,0)
+			var weight = (globalProb * 0.6 + float(neighborCount) / float(totalNeighbors) * 0.4)
+			
+			for j in range(int(weight * 100)):
+				possibleIds.append(id)
+				
+	else:
+		# If no neighbors, then just pick one randomly
+		for i in Globals.totalTileNumber:
+			var id = Globals.availableTiles[i]
+			var prob = Globals.tileProbability[i]
+			for j in range(int(prob * 100)):
+				possibleIds.append(id)
+		# No neighbors
+	# Choosing ID
+	tileID = possibleIds[randi() % possibleIds.size()]
+	background.set_cell(Vector2i(x, y), tileID,Vector2i(randi_range(0,1),randi_range(0,1)))
+	#if not neighborsID.is_empty() :
+		#for id in neighborsID.keys():
+			#for i in range(neighborsID[id]):
+				#possibleIds.append(id)
+		#if neighborsID.keys().size() == 1 and neighborsID[neighborsID.keys()[0]] >= rule1:
+			#for i in range(Globals.totalTileNumber): # Add every ID possible to diversify
+				#for j in range(Globals.tileProbability[i] * 100): 
+					#possibleIds.append(Globals.availableTiles[i])
+		#tileID = possibleIds[randi() % possibleIds.size()]
+	#background.set_cell(Vector2i(x, y), tileID,Vector2i(randi_range(0,1),randi_range(0,1)))
+	#set_cell(<cell position> Vector2i, <Tilse set id> Int, <position on atlas> Vector2i)
 
+func applyRules(x : int, y : int) -> void:
+	var neighborsID = getNeighbors(x, y)
+
+	# Checking if we have the dictionnary
+	if not neighborsID.is_empty() :
+		# Grabbing ID of the cell and check if neighbors have it too
+		var currentID = background.get_cell_source_id((Vector2i(x,y)))
+		var currentIDCount = 0
+		if neighborsID.has(currentID):
+			currentIDCount = neighborsID[currentID]
+		# If less than <rule2> neighbors have this ID, then we give the same one as most of them
+		if currentIDCount < rule2:
+			var maxCount = 0
+			var majorID = currentID
+			for id in neighborsID.keys():
+				if neighborsID[id] > maxCount:
+					maxCount = neighborsID[id]
+					majorID = id
+			background.set_cell(Vector2i(x,y), majorID, Vector2i(randi_range(0,1),randi_range(0,1)))
 
 func getNeighbors(x: int, y: int) -> Dictionary :
 	# Choosing what type of tile do we want
