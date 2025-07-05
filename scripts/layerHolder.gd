@@ -3,7 +3,8 @@ extends Node2D
 const jsonLoader = preload("res://scripts/jsonLoader.gd")
 
 # Waiting for these
-@onready var background: TileMapLayer = $background
+@onready var backgroundLayer: TileMapLayer = $background
+@onready var resourcesLayer: TileMapLayer = $resources
 @onready var chunkOutline: TileMapLayer = $chunkOutline
 @onready var player: Node2D = $"../Player"
 
@@ -13,6 +14,7 @@ var toggleChunkOutline = false
 var generatedChunks = {}
 
 var tile = jsonLoader.loadJson("res://assets/tiles/groundTiles.json")
+var resource = jsonLoader.loadJson("res://assets/tiles/resourceTiles.json")
 
 # Var used just for tests
 var time = 0.0
@@ -22,12 +24,16 @@ var reg = 0.5
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	#seed(1234573756)
+	
+	backgroundLayer.z_index = -10
+	resourcesLayer.z_index = backgroundLayer.z_index + 1
+	chunkOutline.z_index = resourcesLayer.z_index + 1
+	
 	generateWorld(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
 				  Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance))
 	#generateWorld2(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
 				  #Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance),
-				  #5)
-	
+				  #5
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -85,7 +91,7 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 			if not isChunkGenerated(Vector2i(xChunk, yChunk)) :
 				for y in range(yChunk * Globals.chunkSize, (yChunk + 1) * Globals.chunkSize, 1):
 					for x in range(xChunk * Globals.chunkSize, (xChunk + 1) * Globals.chunkSize, 1):
-						background.set_cell(Vector2i(x,y), tile[randi() % tile.size()]["id"], Vector2i(randi_range(0,1),randi_range(0,1)))
+						backgroundLayer.set_cell(Vector2i(x,y), tile[randi() % tile.size()]["id"], Vector2i(randi_range(0,1),randi_range(0,1)))
 						
 						var localX = x - xChunk * Globals.chunkSize
 						var localY = y - yChunk * Globals.chunkSize

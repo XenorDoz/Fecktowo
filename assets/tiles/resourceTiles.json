@@ -7,9 +7,26 @@
 	},
 	{
 		"id": 1,
-		"name": "coal",
+		"name": "stone",
+		"texture": "res://assets/tiles/resources/stone.png",
+		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 2,
+		"name": "coalOre",
 		"texture": "res://assets/tiles/resources/coalOre.png",
-		"baseProbability": 0.1,
+		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 3,
+		"name": "copperOre",
+		"texture": "res://assets/tiles/resources/copperOre.png",
+		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 4,
+		"name": "ironOre",
+		"texture": "res://assets/tiles/resources/ironOre.png",
 		"tileAtlasSize" : [1.1]
 	}
 ]

@@ -16,12 +16,12 @@ script = ExtResource("4_uolhe")
 [node name="background" type="TileMapLayer" parent="layerHolder"]
 tile_set = ExtResource("2_wn3gx")
 
+[node name="resources" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("4_7os5u")
+
 [node name="chunkOutline" type="TileMapLayer" parent="layerHolder"]
 visible = false
 tile_set = ExtResource("3_w1uef")
-
-[node name="TileMapLayer" type="TileMapLayer" parent="layerHolder"]
-tile_set = ExtResource("4_7os5u")
 
 [node name="Player" type="Node2D" parent="."]
 scale = Vector2(0.062, 0.062)
