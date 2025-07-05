@@ -1,0 +1,52 @@
+[gd_resource type="TileSet" load_steps=11 format=3 uid="uid://d3868p027sv8m"]
+
+[ext_resource type="Texture2D" uid="uid://sln4akmk7n2p" path="res://assets/tiles/resources/tree.png" id="1_1esqv"]
+[ext_resource type="Texture2D" uid="uid://hdg2wcksc8cr" path="res://assets/tiles/resources/ironOre.png" id="2_2k4cy"]
+[ext_resource type="Texture2D" uid="uid://7uxmq0b1hcyo" path="res://assets/tiles/resources/stone.png" id="2_ffhey"]
+[ext_resource type="Texture2D" uid="uid://ceesi58c0gwjn" path="res://assets/tiles/resources/coalOre.png" id="2_qu7m6"]
+[ext_resource type="Texture2D" uid="uid://bo4b637vdlksd" path="res://assets/tiles/resources/copperOre.png" id="3_nnv6w"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rt0kd"]
+texture = ExtResource("1_1esqv")
+4:0/size_in_atlas = Vector2i(4, 4)
+4:0/0 = 0
+4:4/size_in_atlas = Vector2i(4, 4)
+4:4/0 = 0
+0:4/size_in_atlas = Vector2i(4, 4)
+0:4/0 = 0
+0:0/size_in_atlas = Vector2i(4, 4)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g6mpw"]
+texture = ExtResource("2_ffhey")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f1tj3"]
+texture = ExtResource("2_qu7m6")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_808fa"]
+texture = ExtResource("3_nnv6w")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nfh4g"]
+texture = ExtResource("2_2k4cy")
+0:1/0 = 0
+1:1/0 = 0
+1:0/0 = 0
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_rt0kd")
+sources/4 = SubResource("TileSetAtlasSource_nfh4g")
+sources/3 = SubResource("TileSetAtlasSource_808fa")
+sources/2 = SubResource("TileSetAtlasSource_f1tj3")
+sources/1 = SubResource("TileSetAtlasSource_g6mpw")

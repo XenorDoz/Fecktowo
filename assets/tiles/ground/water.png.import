@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbn1ucsh4yb5x"
-path="res://.godot/imported/chunkBorder.png-1f3114c84ea9a08a70973c4aaf07a1e0.ctex"
+uid="uid://cp57kjdhxs0a1"
+path="res://.godot/imported/water.png-fb18b9608da94389ca4f653bcc214fb3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/chunkBorder.png"
-dest_files=["res://.godot/imported/chunkBorder.png-1f3114c84ea9a08a70973c4aaf07a1e0.ctex"]
+source_file="res://assets/tiles/ground/water.png"
+dest_files=["res://.godot/imported/water.png-fb18b9608da94389ca4f653bcc214fb3.ctex"]
 
 [params]
 

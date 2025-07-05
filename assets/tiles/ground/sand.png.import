@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbn1ucsh4yb5x"
-path="res://.godot/imported/chunkBorder.png-1f3114c84ea9a08a70973c4aaf07a1e0.ctex"
+uid="uid://ctuj8u4hkkg57"
+path="res://.godot/imported/sand.png-d8c32ff48cd1a0ebf85928aed135b407.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/chunkBorder.png"
-dest_files=["res://.godot/imported/chunkBorder.png-1f3114c84ea9a08a70973c4aaf07a1e0.ctex"]
+source_file="res://assets/tiles/ground/sand.png"
+dest_files=["res://.godot/imported/sand.png-d8c32ff48cd1a0ebf85928aed135b407.ctex"]
 
 [params]
 

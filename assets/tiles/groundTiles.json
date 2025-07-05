@@ -1,0 +1,16 @@
+[
+	{
+		"id": 0,
+		"name": "grass",
+		"texture": "res://assets/tiles/ground/grass.png",
+		"baseProbability": 0.7,
+		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 2,
+		"name": "sand",
+		"texture": "res://assets/tiles/ground/sand.png",
+		"baseProbability": 0.1,
+		"tileAtlasSize" : [1.1]
+	}
+]

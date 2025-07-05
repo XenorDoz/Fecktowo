@@ -8,4 +8,4 @@ var tileProbability = [0.5, 0.5, 0.5, 0.5] # Should be equal to 1
 var totalTileNumber = availableTiles.size() # Number of textures available for tile generation
 
 # Player-toggled parameters
-var loadedChunkDistance = 2 # Number of chunks created around the player (in a square)
+var loadedChunkDistance = 5 # Number of chunks created around the player (in a square)

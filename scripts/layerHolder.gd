@@ -1,10 +1,6 @@
 extends Node2D
 
-# Preloading textures 
-const GRASS = preload("res://assets/tiles/grass2.png")
-const STONE = preload("res://assets/tiles/stone.png")
-const SAND = preload("res://assets/tiles/sand.png")
-const WATER = preload("res://assets/tiles/water.png")
+const jsonLoader = preload("res://scripts/jsonLoader.gd")
 
 # Waiting for these
 @onready var background: TileMapLayer = $background
@@ -13,23 +9,15 @@ const WATER = preload("res://assets/tiles/water.png")
 
 # Var used
 var chunkPos: Vector2i
-var tileID = Globals.availableTiles[0] # Default tile 
 var toggleChunkOutline = false
 var generatedChunks = {}
+
+var tile = jsonLoader.loadJson("res://assets/tiles/groundTiles.json")
 
 # Var used just for tests
 var time = 0.0
 var reg = 0.5
 
-# Rules of generation
-	# When choosing cell color, if neighbors only have a unique ID
-	# Then this is the number of at least required neighoubrs to
-	# Add every other ID to the ID random pick
-var rule1 = 4
-	# When reevaluating cells, if that amount of neighbors or more
-	# Have the same ID as the current cell, then it'll take
-	# The ID of most of the neighbors
-var rule2 = 6
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -39,6 +27,7 @@ func _ready() -> void:
 	#generateWorld2(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
 				  #Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance),
 				  #5)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -55,7 +44,6 @@ func _process(delta: float) -> void:
 	chunkPos.x = int(floor((px / Globals.tileSize / Globals.chunkSize)))
 	chunkPos.y = int(floor((py / Globals.tileSize / Globals.chunkSize)))
 	if prevChunkPos.x != chunkPos.x:
-		print("Player moved from %s to %s" %[prevChunkPos, chunkPos])
 		if prevChunkPos.x < chunkPos.x : # Player going right
 			generateWorld(Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y - Globals.loadedChunkDistance),
 						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance))
@@ -69,7 +57,6 @@ func _process(delta: float) -> void:
 						  #Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
 						  #3)
 	if prevChunkPos.y != chunkPos.y:
-		print("Player moved from %s to %s" %[prevChunkPos, chunkPos])
 		if prevChunkPos.y < chunkPos.y : # Player going down
 			generateWorld(Vector2i(chunkPos.x - Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance),
 						  Vector2i(chunkPos.x + Globals.loadedChunkDistance, chunkPos.y + Globals.loadedChunkDistance))
@@ -92,14 +79,13 @@ func _process(delta: float) -> void:
 func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	# Generates chunks
 	# from is the top-left corner chunk, to is the bottom-right corner
-	print("Generating chunks from %s to %s" %[from, to])
 	for yChunk in range(from.y, to.y+1, 1):
 		for xChunk in range(from.x, to.x+1, 1):
 			# Checking if chunk is not already loaded
 			if not isChunkGenerated(Vector2i(xChunk, yChunk)) :
 				for y in range(yChunk * Globals.chunkSize, (yChunk + 1) * Globals.chunkSize, 1):
 					for x in range(xChunk * Globals.chunkSize, (xChunk + 1) * Globals.chunkSize, 1):
-						background.set_cell(Vector2i(x,y), Globals.availableTiles[0], Vector2i(randi_range(0,1),randi_range(0,1)))
+						background.set_cell(Vector2i(x,y), tile[randi() % tile.size()]["id"], Vector2i(randi_range(0,1),randi_range(0,1)))
 						
 						var localX = x - xChunk * Globals.chunkSize
 						var localY = y - yChunk * Globals.chunkSize
@@ -110,6 +96,9 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 
 				markChunkGenerated(Vector2i(xChunk,yChunk))
 	pass 
+
+func generateResources(x: int, y: int) -> void:
+	pass
 
 func isChunkGenerated(chunk : Vector2i) -> bool:
 	return generatedChunks.has(chunk)

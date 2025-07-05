@@ -1,0 +1,15 @@
+[
+	{
+		"id": 0,
+		"name": "tree",
+		"texture": "res://assets/tiles/resources/tree.png",
+		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 1,
+		"name": "coal",
+		"texture": "res://assets/tiles/resources/coalOre.png",
+		"baseProbability": 0.1,
+		"tileAtlasSize" : [1.1]
+	}
+]

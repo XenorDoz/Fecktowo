@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjrqstkbp8x3u"
-path="res://.godot/imported/grass2.png-08566c24110f7006a93596e7312db431.ctex"
+uid="uid://hdg2wcksc8cr"
+path="res://.godot/imported/ironOre.png-1daeb97d9c33030e9f6166ed54c419e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/grass2.png"
-dest_files=["res://.godot/imported/grass2.png-08566c24110f7006a93596e7312db431.ctex"]
+source_file="res://assets/tiles/resources/ironOre.png"
+dest_files=["res://.godot/imported/ironOre.png-1daeb97d9c33030e9f6166ed54c419e3.ctex"]
 
 [params]
 
