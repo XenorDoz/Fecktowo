@@ -1,10 +1,12 @@
 extends Node2D
 
 const jsonLoader = preload("res://scripts/jsonLoader.gd")
+const resourceClass = preload("res://classes/resourceClass.gd")
 
 # Waiting for these
 @onready var backgroundLayer: TileMapLayer = $background
 @onready var resourcesLayer: TileMapLayer = $resources
+@onready var hiddenResourcesLayer: TileMapLayer = $hiddenResources
 @onready var chunkOutline: TileMapLayer = $chunkOutline
 @onready var player: Node2D = $"../Player"
 
@@ -14,7 +16,6 @@ var toggleChunkOutline = false
 var generatedChunks = {}
 
 var tile = jsonLoader.loadJson("res://assets/tiles/groundTiles.json")
-var resource = jsonLoader.loadJson("res://assets/tiles/resourceTiles.json")
 
 # Var used just for tests
 var time = 0.0
@@ -25,15 +26,18 @@ var reg = 0.5
 func _ready() -> void:
 	#seed(1234573756)
 	
+	# Setting up layers 
 	backgroundLayer.z_index = -10
 	resourcesLayer.z_index = backgroundLayer.z_index + 1
 	chunkOutline.z_index = resourcesLayer.z_index + 1
 	
+	# Generating world spawn
 	generateWorld(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
 				  Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance))
 	#generateWorld2(Vector2i(-Globals.loadedChunkDistance, -Globals.loadedChunkDistance),
 				  #Vector2i(Globals.loadedChunkDistance, Globals.loadedChunkDistance),
 				  #5
+	generateResources(Vector2i(0,0),Vector2i(0,0))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -101,9 +105,16 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 								chunkOutline.set_cell(Vector2i(x,y), 0, Vector2i(0,0))
 
 				markChunkGenerated(Vector2i(xChunk,yChunk))
+	
+	# When it's done, we generate resources further than what player can see, on hidden layer
+	generateResources(from, to)
+	
 	pass 
 
-func generateResources(x: int, y: int) -> void:
+func generateResources(from: Vector2i, to: Vector2i) -> void:
+	for i in range(0,10,1):
+		var resource = resourceClass.new(2, 3000, Vector2i(10+i,10))
+		hiddenResourcesLayer.set_cell(resource.position, resource.id, resource.sprite)
 	pass
 
 func isChunkGenerated(chunk : Vector2i) -> bool:

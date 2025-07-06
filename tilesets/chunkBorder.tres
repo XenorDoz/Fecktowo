@@ -1,8 +1,8 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://bcvf5i2tt5n2m"]
 
-[ext_resource type="Texture2D" uid="uid://b2hw5wkymxo86" path="res://assets/tiles/chunkBorder.png" id="1_cs5gk"]
+[ext_resource type="Texture2D" uid="uid://bbn1ucsh4yb5x" path="res://assets/tiles/chunkBorder.png" id="1_cs5gk"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qfpp5"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w2c54"]
 texture = ExtResource("1_cs5gk")
 0:0/0 = 0
 1:0/0 = 0
@@ -10,4 +10,4 @@ texture = ExtResource("1_cs5gk")
 1:1/0 = 0
 
 [resource]
-sources/0 = SubResource("TileSetAtlasSource_qfpp5")
+sources/0 = SubResource("TileSetAtlasSource_w2c54")

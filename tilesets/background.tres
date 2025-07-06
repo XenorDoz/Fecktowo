@@ -1,40 +1,32 @@
 [gd_resource type="TileSet" load_steps=9 format=3 uid="uid://c56vpgauhrsp3"]
 
-[ext_resource type="Texture2D" uid="uid://bjrqstkbp8x3u" path="res://assets/tiles/grass2.png" id="1_2a7yl"]
-[ext_resource type="Texture2D" uid="uid://c0vdpjetwumpc" path="res://assets/tiles/stone.png" id="2_gjqdp"]
-[ext_resource type="Texture2D" uid="uid://ctuj8u4hkkg57" path="res://assets/tiles/sand.png" id="3_2tedk"]
-[ext_resource type="Texture2D" uid="uid://cp57kjdhxs0a1" path="res://assets/tiles/water.png" id="4_w8j0h"]
+[ext_resource type="Texture2D" uid="uid://bjrqstkbp8x3u" path="res://assets/tiles/ground/grass.png" id="1_2a7yl"]
+[ext_resource type="Texture2D" uid="uid://c0vdpjetwumpc" path="res://assets/tiles/ground/stone.png" id="2_gjqdp"]
+[ext_resource type="Texture2D" uid="uid://ctuj8u4hkkg57" path="res://assets/tiles/ground/sand.png" id="3_2tedk"]
+[ext_resource type="Texture2D" uid="uid://cp57kjdhxs0a1" path="res://assets/tiles/ground/water.png" id="4_w8j0h"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hphg5"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p04yr"]
 texture = ExtResource("1_2a7yl")
 0:0/0 = 0
-0:0/0/probability = 0.25
 1:0/0 = 0
-1:0/0/probability = 0.25
 0:1/0 = 0
-0:1/0/probability = 0.25
 1:1/0 = 0
-1:1/0/probability = 0.25
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_05nty"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xascg"]
 texture = ExtResource("2_gjqdp")
 0:0/0 = 0
-0:0/0/probability = 0.25
 1:0/0 = 0
-1:0/0/probability = 0.25
 0:1/0 = 0
-0:1/0/probability = 0.25
 1:1/0 = 0
-1:1/0/probability = 0.25
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vwd4"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kmm66"]
 texture = ExtResource("3_2tedk")
 0:0/0 = 0
 1:0/0 = 0
 0:1/0 = 0
 1:1/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lifxb"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_47ygh"]
 texture = ExtResource("4_w8j0h")
 0:0/0 = 0
 1:0/0 = 0
@@ -42,7 +34,7 @@ texture = ExtResource("4_w8j0h")
 1:1/0 = 0
 
 [resource]
-sources/0 = SubResource("TileSetAtlasSource_hphg5")
-sources/1 = SubResource("TileSetAtlasSource_05nty")
-sources/2 = SubResource("TileSetAtlasSource_2vwd4")
-sources/3 = SubResource("TileSetAtlasSource_lifxb")
+sources/0 = SubResource("TileSetAtlasSource_p04yr")
+sources/1 = SubResource("TileSetAtlasSource_xascg")
+sources/2 = SubResource("TileSetAtlasSource_kmm66")
+sources/3 = SubResource("TileSetAtlasSource_47ygh")
