@@ -23,12 +23,10 @@ func _init(_id: int, _richness: int, _position := Vector2i.ZERO):
 	
 	# Grabbing sprite	
 	var source = resourceTileset.get_source(id) as TileSetAtlasSource
-	var tileSize = source.get_atlas_grid_size().x
 	var atlasPos : Vector2i
 	atlasPos.y = state
 	atlasPos.x = randi_range(0, source.get_atlas_grid_size().x-1)
 	sprite = atlasPos
-	print("Created tile of id %s at %s, richness %s thus state %s, sprite is at %s" %[id, position, richness, state, sprite])
 	
 
 func isInteracted() -> void:
