@@ -2,7 +2,7 @@ extends Node2D
 
 const jsonLoader = preload("res://scripts/jsonLoader.gd")
 const resourceClass = preload("res://classes/resourceClass.gd")
-const ClusterClass = preload("res://classes/clusterClass.gd")
+const clusterClass = preload("res://classes/clusterClass.gd")
 
 # Waiting for these
 @onready var backgroundLayer: TileMapLayer = $background
@@ -18,6 +18,7 @@ var generatedChunks = {} # Chunks generated : {Vector2i(int, int)}
 
 # Resource stuff
 var resourceMap = {} # Resource cells of their own class, {Vector2i : resource}
+var blockedChunksByResource = {} # Will have every info on what resources are blocked on that chunk
 var clusterMap = {} # Cluster infos, will contain all clusters, {Vector2i : cluster}
 
 var tileInfo = jsonLoader.loadJson("res://assets/tiles/groundTiles.json")
@@ -25,7 +26,6 @@ var resourceInfo = jsonLoader.loadJson("res://assets/tiles/resourceTiles.json")
 # Var used just for tests
 var time = 0.0
 var reg = 0.5
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -97,7 +97,7 @@ func _process(delta: float) -> void:
 func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	# Generates chunks
 	# from is the top-left corner chunk, to is the bottom-right corner
-	generateResources(from, to)
+	generateResources_async(from, to)
 	for yChunk in range(from.y, to.y+1, 1):
 		for xChunk in range(from.x, to.x+1, 1):
 			# Checking if chunk is not already loaded
@@ -106,9 +106,7 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 					for x in range(xChunk * Globals.chunkSize, (xChunk + 1) * Globals.chunkSize, 1):
 						# Placing cells
 						backgroundLayer.set_cell(Vector2i(x,y), tileInfo[randi() % tileInfo.size()]["id"], Vector2i(randi_range(0,1),randi_range(0,1)))
-						
-						
-						
+
 						# Chunk borders
 						var localX = x - xChunk * Globals.chunkSize
 						var localY = y - yChunk * Globals.chunkSize
@@ -121,12 +119,13 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	
 	pass 
 
-func generateResources(from: Vector2i, to: Vector2i) -> void:
+func generateResources_async(from: Vector2i, to: Vector2i) -> void:
 	var extendFrom = from - Vector2i(Globals.defaultMaxRadius, Globals.defaultMaxRadius)
 	var extendTo = to + Vector2i(Globals.defaultMaxRadius, Globals.defaultMaxRadius)
 	
 	for yChunk in range(extendFrom.y, extendTo.y+1, 1):
 		for xChunk in range(extendFrom.x, extendTo.x+1, 1):
+			await get_tree().process_frame
 			if not clusterMap.has(Vector2i(xChunk,yChunk)):
 				# Grabbing infos about if we can generate it depending on distance
 				@warning_ignore("integer_division")
@@ -141,9 +140,9 @@ func generateResources(from: Vector2i, to: Vector2i) -> void:
 					var id = res["id"]
 					if canGenerateClusterAt(chunkPos, id, radius):
 						var clusterPos = Vector2i(randi_range(0,15) + xChunk * Globals.chunkSize, randi_range(0,15) + yChunk *Globals.chunkSize)
-						var newCluster = ClusterClass.new(clusterPos,id, radius)
+						var newCluster = clusterClass.new(clusterPos,id, radius)
 						var tilesCreated = newCluster.generateResources()
-						clusterMap[clusterPos] = newCluster
+						updateMapFromClusterPlaced(newCluster)
 						for key in tilesCreated.keys():
 							resourceMap[key] = tilesCreated[key]
 				pass
@@ -161,8 +160,19 @@ func showChunkOutline(toggle: bool) -> void:
 		chunkOutline.show()
 	else:
 		chunkOutline.hide()
-	
+
+func getChunkOfTile(pos: Vector2i) -> Vector2i:
+	if pos.x < 0:
+		pos.x -= Globals.chunkSize
+	if pos.y < 0:
+		pos.y -= Globals.chunkSize
+	@warning_ignore("integer_division")
+	return(Vector2i(int(pos.x / Globals.chunkSize), int(pos.y / Globals.chunkSize))) 
+
 func canGenerateClusterAt(pos: Vector2i, id: int, rad: int) -> bool:
+	if blockedChunksByResource.has(id) and blockedChunksByResource[id].has(pos):
+		# If that chunk cannot receive that resource
+		return false
 	var chunkDistFromCenter = pos.length()
 	var minClusterDistance = int((Globals.defaultMinDistance
 				+ pow(chunkDistFromCenter, 1.05) * 0.2
@@ -178,6 +188,18 @@ func canGenerateClusterAt(pos: Vector2i, id: int, rad: int) -> bool:
 				return false
 	return true
 
+func updateMapFromClusterPlaced(cluster : clusterClass) -> void:
+	var chunkPos = getChunkOfTile(cluster.origin)
+	var chunkId = cluster.id
+	@warning_ignore("integer_division")
+	var offset = 1 + cluster.radius/Globals.chunkSize
+	
+	clusterMap[chunkPos] = cluster
+	
+	#### Ajouter les chunks bloqués par id autour du cluster, dans la zone 
+	#### origin + radius on bloque tout, et dans origin + distance on bloque le même id
+	pass
+
 func showResoucesOnChunk(chunk: Vector2i) -> void:
 	for x in range(chunk.x * Globals.chunkSize, (chunk.x + 1) * Globals.chunkSize, 1):
 		for y in range(chunk.y * Globals.chunkSize, (chunk.y + 1) * Globals.chunkSize, 1):
@@ -188,7 +210,6 @@ func showResoucesOnChunk(chunk: Vector2i) -> void:
 				hiddenResourcesLayer.erase_cell(cell.position)
 				pass
 				
-
 func print_generated_chunks() -> void:
 	if generatedChunks.is_empty():
 		print("Aucun chunk généré.")

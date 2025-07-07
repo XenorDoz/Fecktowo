@@ -25,4 +25,5 @@ func updateCluster() -> void:
 func generateResources() -> Dictionary :
 	# Should
 	var resourcesGenerated = {}
+	print("chunk of %s generated at %s" %[id, origin])
 	return resourcesGenerated
