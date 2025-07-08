@@ -26,4 +26,9 @@ func generateResources() -> Dictionary :
 	# Should
 	var resourcesGenerated = {}
 	print("chunk of %s generated at %s" %[id, origin])
+	for x in range (-5, 6, 1):
+		for y in range (-5, 6, 1):
+			var cellPos = Vector2i(origin.x + x, origin.y	 + y)
+			var cell = resourceClass.new(id, 6000, cellPos)
+			resourcesGenerated[cellPos] = cell
 	return resourcesGenerated

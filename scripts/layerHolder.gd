@@ -18,7 +18,7 @@ var generatedChunks = {} # Chunks generated : {Vector2i(int, int)}
 
 # Resource stuff
 var resourceMap = {} # Resource cells of their own class, {Vector2i : resource}
-var blockedChunksByResource = {} # Will have every info on what resources are blocked on that chunk
+var blockedChunksByResource = {} # Will have every info on what resources are blocked on that chunk, {id : {Vector2i, Vector2i...}
 var clusterMap = {} # Cluster infos, will contain all clusters, {Vector2i : cluster}
 
 var tileInfo = jsonLoader.loadJson("res://assets/tiles/groundTiles.json")
@@ -47,8 +47,6 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var prevChunkPos = playerChunkPos
-	
-	
 	var px = player.global_position.x
 	var py = player.global_position.y
 	if px < 0:
@@ -120,33 +118,42 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	pass 
 
 func generateResources_async(from: Vector2i, to: Vector2i) -> void:
-	var extendFrom = from - Vector2i(Globals.defaultMaxRadius, Globals.defaultMaxRadius)
-	var extendTo = to + Vector2i(Globals.defaultMaxRadius, Globals.defaultMaxRadius)
+	var chunkRadius := int(ceil(float(Globals.defaultMaxRadius) / Globals.chunkSize))
+	var extendFrom = from - Vector2i(chunkRadius, chunkRadius)
+	var extendTo = to + Vector2i(chunkRadius, chunkRadius)
+	
+	var chunksToCheck := []
 	
 	for yChunk in range(extendFrom.y, extendTo.y+1, 1):
 		for xChunk in range(extendFrom.x, extendTo.x+1, 1):
-			await get_tree().process_frame
-			if not clusterMap.has(Vector2i(xChunk,yChunk)):
-				# Grabbing infos about if we can generate it depending on distance
-				@warning_ignore("integer_division")
-				var chunkPos = Vector2i(xChunk * Globals.chunkSize + Globals.chunkSize / 2,
-												   yChunk * Globals.chunkSize + Globals.chunkSize / 2)
-				var chunkDistFromCenter = chunkPos.length()
-				var radius = clamp(Globals.defaultMinRadius + int(pow(chunkDistFromCenter / 100, 0.55)),
-									  Globals.defaultMinRadius, Globals.defaultMaxRadius)
-				
-				# Checking for every id if it's far enough from others
-				for res in resourceInfo:
-					var id = res["id"]
-					if canGenerateClusterAt(chunkPos, id, radius):
-						var clusterPos = Vector2i(randi_range(0,15) + xChunk * Globals.chunkSize, randi_range(0,15) + yChunk *Globals.chunkSize)
-						var newCluster = clusterClass.new(clusterPos,id, radius)
-						var tilesCreated = newCluster.generateResources()
-						updateMapFromClusterPlaced(newCluster)
-						for key in tilesCreated.keys():
-							resourceMap[key] = tilesCreated[key]
-				pass
-		
+			chunksToCheck.append(Vector2i(xChunk, yChunk))
+	
+	chunksToCheck.shuffle()
+	for chunk in chunksToCheck:
+		await get_tree().process_frame
+		if not clusterMap.has(chunk):
+			# Grabbing infos about if we can generate it depending on distance
+			@warning_ignore("integer_division")
+			var chunkPos = Vector2i(chunk.x * Globals.chunkSize + Globals.chunkSize / 2,
+											   chunk.y * Globals.chunkSize + Globals.chunkSize / 2)
+			var chunkDistFromCenter = chunkPos.length()
+			var radius = clamp(Globals.defaultMinRadius + int(pow(chunkDistFromCenter / 100, 0.55)),
+								  Globals.defaultMinRadius, Globals.defaultMaxRadius)
+			
+			# Checking for every id if it's far enough from others
+			for res in resourceInfo:
+				var id = res["id"]
+				if canGenerateClusterAt(chunkPos, id, radius):
+					var clusterPos = Vector2i(randi_range(0,15) + chunk.x * Globals.chunkSize, randi_range(0,15) + chunk.y *Globals.chunkSize)
+					var newCluster = clusterClass.new(clusterPos,id, radius)
+					var tilesCreated = newCluster.generateResources()
+					print("Generated cluster at %s with radius %s: %s tiles" % [clusterPos, radius, tilesCreated.size()])
+					updateMapFromClusterPlaced(newCluster)
+					for key in tilesCreated.keys():
+						hiddenResourcesLayer.set_cell(tilesCreated[key].position, tilesCreated[key].id, tilesCreated[key].sprite)
+						resourceMap[key] = tilesCreated[key]
+			pass
+	
 	pass
 
 func isChunkGenerated(chunk: Vector2i) -> bool:
@@ -190,15 +197,34 @@ func canGenerateClusterAt(pos: Vector2i, id: int, rad: int) -> bool:
 
 func updateMapFromClusterPlaced(cluster : clusterClass) -> void:
 	var chunkPos = getChunkOfTile(cluster.origin)
-	var chunkId = cluster.id
+	var clusterId = cluster.id
 	@warning_ignore("integer_division")
 	var offset = 1 + cluster.radius/Globals.chunkSize
 	
+	# Adding cluster to cluster map
 	clusterMap[chunkPos] = cluster
+	# Blocking that chunk position and around from having any cluster
 	
-	#### Ajouter les chunks bloqués par id autour du cluster, dans la zone 
-	#### origin + radius on bloque tout, et dans origin + distance on bloque le même id
-	pass
+	for x in range(chunkPos.x - offset, chunkPos.x + offset + 1, 1):
+		for y in range (chunkPos.y - offset, chunkPos.y + offset + 1, 1):
+			var pos = Vector2i(x,y)
+			for resId in resourceInfo :
+				var id = resId["id"]
+				if not blockedChunksByResource.has(id):
+					blockedChunksByResource[id] = {}
+				blockedChunksByResource[id][pos] = true
+					
+	# Blocking all around that cluster the same id bc we know they'll be too close 
+	var minClusterDistance = int((Globals.defaultMinDistance
+				+ pow(cluster.origin.length(), 1.05) * 0.2
+				+ log(cluster.origin.length() + 10) * 12) * 0.8)
+	var offsetChunkDistance = int(minClusterDistance / Globals.chunkSize)
+	for x in range(chunkPos.x - offsetChunkDistance, chunkPos.x + offsetChunkDistance + 1, 1):
+		for y in range (chunkPos.y - offsetChunkDistance, chunkPos.y + offsetChunkDistance + 1, 1):
+			var pos = Vector2i(x,y)
+			if not blockedChunksByResource.has(clusterId):
+				blockedChunksByResource[clusterId] = {}
+			blockedChunksByResource[clusterId][pos] = true
 
 func showResoucesOnChunk(chunk: Vector2i) -> void:
 	for x in range(chunk.x * Globals.chunkSize, (chunk.x + 1) * Globals.chunkSize, 1):
@@ -212,10 +238,10 @@ func showResoucesOnChunk(chunk: Vector2i) -> void:
 				
 func print_generated_chunks() -> void:
 	if generatedChunks.is_empty():
-		print("Aucun chunk généré.")
+		print("No chunk generated.")
 		return
 
-	print("Chunks générés :")
+	print("Generated chunks :")
 	for coords in generatedChunks.keys():
 		var data = generatedChunks[coords]
 		if typeof(data) == TYPE_DICTIONARY:

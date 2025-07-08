@@ -20,6 +20,7 @@ tile_set = ExtResource("2_wn3gx")
 tile_set = ExtResource("4_7os5u")
 
 [node name="hiddenResources" type="TileMapLayer" parent="layerHolder"]
+visible = false
 tile_set = ExtResource("4_7os5u")
 
 [node name="chunkOutline" type="TileMapLayer" parent="layerHolder"]
