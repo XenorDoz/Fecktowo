@@ -6,7 +6,7 @@ const resourceTileset = preload("res://tilesets/resourcesOres.tres")
 
 var id: int # type of resource
 var richness: int
-var richnessThresHold = []
+var richnessThreshold := [0,1,2,3,4,5,6,7]
 var state : int = 7
 var sprite : Vector2i
 var position : Vector2i
@@ -15,11 +15,6 @@ func _init(_id: int, _richness: int, _position := Vector2i.ZERO):
 	id = _id
 	richness = _richness
 	position = _position	
-	
-	richnessThresHold = GameData.resourceThresholds[id]
-	for i in range (0, richnessThresHold.size(),1):
-		if richness > richnessThresHold[i]:
-			state = i
 	
 	# Grabbing sprite	
 	var source = resourceTileset.get_source(id) as TileSetAtlasSource
@@ -34,7 +29,9 @@ func isInteracted() -> void:
 	updateState()
 
 func updateState() -> void:
-	if richness < richnessThresHold[state] :
+	if richness <= 0:
+		return 
+	if richness < richnessThreshold[state] :
 		state -= 1
 		sprite.y = state
 		updateSprite()

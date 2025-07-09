@@ -2,7 +2,7 @@ class_name ClusterInstance
 extends RefCounted
 
 const resourceClass = preload("res://classes/resourceClass.gd")
-
+var bwa = 0
 var id: int
 var origin: Vector2i
 var radius: int
@@ -16,12 +16,9 @@ func _init(_origin: Vector2i, _id: int, _radius: int) -> void :
 	radius = _radius
 	
 	var distFromCenter = origin.length()
-	maxRichness = clamp(int(log(distFromCenter + 10) * 20), Globals.defaultMinRichness, Globals.defaultMaxRichness)
+	maxRichness = clamp(int(log(distFromCenter + 10) * 20 * randf_range(0.8,1.5)), Globals.defaultMinRichness, INF)
 	if id == 0:
-		maxRichness = 1500
-func updateCluster() -> void:
-	
-	pass
+		maxRichness /= 100
 
 func generateResources() -> Dictionary :
 	# Generates resources around the cluster
@@ -44,11 +41,8 @@ func generateResources() -> Dictionary :
 		var proba = getTileProbability(tier, current)
 		
 		# If resource is created
-		if randf() <= proba:			
-			var richness = calculateTileRichness(dist, radius, maxRichness)
-			# Forcing richness for trees
-			if id == 0 : richness = randi_range(1050,1500)
-			var resource = resourceClass.new(id, richness, current)
+		if randf() <= proba:
+			var resource = resourceClass.new(id, 0, current)
 			positions[current] = resource
 			
 			# Pushing frontier to neighbors
@@ -58,7 +52,7 @@ func generateResources() -> Dictionary :
 					frontier.append(neighbor)
 	
 	removeUniqueEmpty(visitedTiles)
-	
+	distributeRichness()
 	return positions
 
 func removeUniqueEmpty(visitedTiles: Dictionary ) -> void:
@@ -109,5 +103,44 @@ func calculateTileRichness(dist: float, rad: int, maxValue: int):
 		percent = 0.5 - ((dist - 2.0 * oneThird) / oneThird) * 0.5 # 0%-50%
 	return int(clamp(percent, 0.0, 1.0) * maxValue)
 
-##### Resources at the end are very rich
-##### Solution could be generate resources then attribute them richness
+func distributeRichness() -> void:
+	if positions.is_empty():
+		return
+	var maxDist = 0.0
+	for pos in positions.keys():
+		# Grabbing max distance
+		var dist = origin.distance_to(pos)
+		if dist > maxDist: maxDist = dist 
+	
+	var richnessPerTile = float(maxRichness) / float(positions.size())
+	
+	for pos in positions.keys():
+		var dist = origin.distance_to(pos)
+		var tier = dist / maxDist
+		var richnessFactor := 0.0
+		if tier <= 1.0 / 3.0:
+			richnessFactor = lerp(1.0, 0.9, tier * 3.0)
+		elif tier <= 2.0 / 3.0:
+			richnessFactor = lerp(0.9, 0.5, (tier - 1.0 / 3.0) * 3.0)
+		else:
+			richnessFactor = lerp(0.5, 0.0, (tier - 2.0 / 3.0) * 3.0)
+		
+		var richness = richnessPerTile * richnessFactor
+		# Just for trees
+		if id == 0:
+			richness = randi_range(maxRichness * 0.9, maxRichness * 1.2)
+		positions[pos].richness = richness
+			
+		# Defining the richness threshold
+		var maxRichnessOnTile = maxRichness
+		var richnessThreshold = [maxRichnessOnTile * 0.05, maxRichnessOnTile * 0.1, maxRichnessOnTile * 0.2,  maxRichnessOnTile * 0.35,
+								maxRichnessOnTile * 0.5, maxRichnessOnTile * 0.6, maxRichnessOnTile * 0.75, maxRichnessOnTile * 0.9]
+		positions[pos].richnessThreshold = richnessThreshold
+		positions[pos].updateState()
+		#print("id %s : origin is %s and position is %s richness %s of threshold %s" %[id, origin, pos, richness, richnessThreshold])
+
+	pass
+
+
+##### Set a custom richness threshold instead of a static one
+##### [5%, 10%, 20%, 35%, 50%, 75%, 90%]

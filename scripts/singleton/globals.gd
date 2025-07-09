@@ -5,8 +5,8 @@ var chunkSize = 16 # Number of tiles in a chunk
 var tileSize = 16 # Size of a tile
 
 # Resources parameters
-var defaultMinRichness = 3000
-var defaultMaxRichness = 160000
+var defaultMinRichness = 15000
+var defaultMaxRichness = 15000000
 var defaultMinDistance = 120
 var defaultMaxDistance = 8000
 var defaultMinRadius = 5
