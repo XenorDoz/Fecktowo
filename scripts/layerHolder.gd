@@ -97,7 +97,7 @@ func _process(delta: float) -> void:
 func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	# Generates chunks
 	# from is the top-left corner chunk, to is the bottom-right corner
-	generateResources_async(from, to)
+	await generateResources_async(from, to)
 	generateBackgroundWallpaper_async(from,to)
 	for yChunk in range(from.y, to.y+1, 1):
 		for xChunk in range(from.x, to.x+1, 1):
@@ -122,8 +122,8 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 
 func generateResources_async(from: Vector2i, to: Vector2i) -> void:
 	var chunkRadius := int(ceil(float(Globals.defaultMaxRadius) / Globals.chunkSize))
-	var extendFrom = from - Vector2i(chunkRadius, chunkRadius)
-	var extendTo = to + Vector2i(chunkRadius, chunkRadius)
+	var extendFrom = from - Vector2i(chunkRadius, chunkRadius) * 2
+	var extendTo = to + Vector2i(chunkRadius, chunkRadius) * 2
 	
 	var chunksToCheck := []
 	
@@ -132,8 +132,11 @@ func generateResources_async(from: Vector2i, to: Vector2i) -> void:
 			chunksToCheck.append(Vector2i(xChunk, yChunk))
 	
 	chunksToCheck.shuffle()
+	var i = 0
 	for chunk in chunksToCheck:
-		await get_tree().process_frame
+		i += 1
+		if i >= 500:
+			await get_tree().process_frame
 		if not clusterMap.has(chunk):
 			# Grabbing infos about if we can generate it depending on distance
 			@warning_ignore("integer_division")
@@ -162,11 +165,8 @@ func generateBackgroundWallpaper_async(from: Vector2i, to: Vector2i) -> void:
 	var loadDistance = clamp(Globals.loadedChunkDistance * 2, 20, 30)
 	var expandedFrom = Vector2i(from.x - loadDistance, from.y - loadDistance/2)
 	var expandedTo = Vector2i(to.x + loadDistance, to.y + loadDistance/2)
-	var textureSize = backgroundWallpaper.tile_set.get_tile_size()
-	var tilesToModifyX = range(expandedFrom.x * Globals.chunkSize, expandedTo.x * Globals.chunkSize, textureSize.x)
-	var tilesToModifyY = range(expandedFrom.y * Globals.chunkSize, expandedTo.y * Globals.chunkSize, textureSize.y)
 	var i = 0
-	for x in range(expandedFrom.x, expandedTo.x + 1):
+	for x in range(expandedFrom.x, expandedTo.x + 1, ):
 		for y in range(expandedFrom.y, expandedTo.y + 1):
 			i += 1
 			if i > 5 :

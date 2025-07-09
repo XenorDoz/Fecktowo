@@ -3,42 +3,42 @@
 		"id": 0,
 		"name": "tree",
 		"texture": "res://assets/tiles/resources/tree.png",
-		"richnessThresold" : [5, 10, 20, 40, 60, 80, 100],
+		"richnessThresold" : [50, 100, 200, 400, 600, 800, 1000],
 		"tileAtlasSize" : [1.1]
 	},
 	{
 		"id": 1,
 		"name": "stone",
 		"texture": "res://assets/tiles/resources/stone.png",
-		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"richnessThresold" : [250, 500, 1000, 2000, 4000, 5000, 6000],
 		"tileAtlasSize" : [1.1]
 	},
 	{
 		"id": 2,
 		"name": "coalOre",
 		"texture": "res://assets/tiles/resources/coalOre.png",
-		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"richnessThresold" : [250, 500, 1000, 2000, 4000, 5000, 6000],
 		"tileAtlasSize" : [1.1]
 	},
 	{
 		"id": 3,
 		"name": "copperOre",
 		"texture": "res://assets/tiles/resources/copperOre.png",
-		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"richnessThresold" : [250, 500, 1000, 2000, 4000, 5000, 6000],
 		"tileAtlasSize" : [1.1]
 	},
 	{
 		"id": 4,
 		"name": "ironOre",
 		"texture": "res://assets/tiles/resources/ironOre.png",
-		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"richnessThresold" : [250, 500, 1000, 2000, 4000, 5000, 6000],
 		"tileAtlasSize" : [1.1]
 	},
 	{
 		"id": 5,
 		"name": "clay",
 		"texture": "res://assets/tiles/resources/clay.png",
-		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"richnessThresold" : [250, 500, 1000, 2000, 4000, 5000, 6000],
 		"tileAtlasSize" : [1.1]
 	}
 ]
