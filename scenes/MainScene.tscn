@@ -11,26 +11,6 @@
 
 [node name="MainScene" type="Node2D"]
 
-[node name="layerHolder" type="Node2D" parent="."]
-script = ExtResource("4_uolhe")
-
-[node name="backgroundWallpaper" type="TileMapLayer" parent="layerHolder"]
-tile_set = ExtResource("2_yscvf")
-
-[node name="background" type="TileMapLayer" parent="layerHolder"]
-tile_set = ExtResource("2_wn3gx")
-
-[node name="resources" type="TileMapLayer" parent="layerHolder"]
-tile_set = ExtResource("4_7os5u")
-
-[node name="hiddenResources" type="TileMapLayer" parent="layerHolder"]
-visible = false
-tile_set = ExtResource("4_7os5u")
-
-[node name="chunkOutline" type="TileMapLayer" parent="layerHolder"]
-visible = false
-tile_set = ExtResource("3_w1uef")
-
 [node name="Player" type="Node2D" parent="."]
 scale = Vector2(0.062, 0.062)
 script = ExtResource("1_1n58j")
@@ -44,3 +24,22 @@ scale = Vector2(0.062, 0.0622576)
 zoom = Vector2(0.5, 0.5)
 script = ExtResource("3_av3pe")
 playerPath = NodePath("../Player")
+
+[node name="layerHolder" type="Node2D" parent="."]
+script = ExtResource("4_uolhe")
+
+[node name="backgroundWallpaper" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("2_yscvf")
+
+[node name="background" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("2_wn3gx")
+
+[node name="resources" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("4_7os5u")
+
+[node name="hiddenResources" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("4_7os5u")
+
+[node name="chunkOutline" type="TileMapLayer" parent="layerHolder"]
+visible = false
+tile_set = ExtResource("3_w1uef")

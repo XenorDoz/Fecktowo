@@ -58,6 +58,7 @@ func _process(delta: float) -> void:
 		
 	playerChunkPos.x = int(floor((px / Globals.tileSize / Globals.chunkSize)))
 	playerChunkPos.y = int(floor((py / Globals.tileSize / Globals.chunkSize)))
+	
 	if prevChunkPos.x != playerChunkPos.x:
 		if prevChunkPos.x < playerChunkPos.x : # Player going right
 			generateWorld(Vector2i(playerChunkPos.x + Globals.loadedChunkDistance, playerChunkPos.y - Globals.loadedChunkDistance),

@@ -1,6 +1,6 @@
 extends Node2D
 
-var speed = 200 # Move speed
+var speed = Globals.defaultPlayerSpeed # Move speed
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -24,10 +24,6 @@ func move(delta : float) -> void :
 		moveVector.x -= 1
 	if Input.is_action_pressed("moveRight"):
 		moveVector.x += 1
-	if Input.is_key_pressed(KEY_SHIFT):
-		speed = 800
-	else :
-		speed = 200
 	
 	# Normalization, so no fast diagonals
 	if moveVector.length() > 0:

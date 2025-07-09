@@ -114,6 +114,7 @@ func distributeRichness() -> void:
 	
 	var richnessPerTile = float(maxRichness) / float(positions.size())
 	
+	var maxRichnessOnTile = 0
 	for pos in positions.keys():
 		var dist = origin.distance_to(pos)
 		var tier = dist / maxDist
@@ -131,16 +132,14 @@ func distributeRichness() -> void:
 			richness = randi_range(maxRichness * 0.9, maxRichness * 1.2)
 		positions[pos].richness = richness
 			
-		# Defining the richness threshold
-		var maxRichnessOnTile = maxRichness
-		var richnessThreshold = [maxRichnessOnTile * 0.05, maxRichnessOnTile * 0.1, maxRichnessOnTile * 0.2,  maxRichnessOnTile * 0.35,
-								maxRichnessOnTile * 0.5, maxRichnessOnTile * 0.6, maxRichnessOnTile * 0.75, maxRichnessOnTile * 0.9]
+		# Defining the maximum richness on a tile
+		if positions[pos].richness > maxRichnessOnTile:
+			maxRichnessOnTile = positions[pos].richness
+	
+	# Setting up thresold of that richness
+	var richnessThreshold = [int(maxRichnessOnTile * 0.05), int(maxRichnessOnTile * 0.1), int(maxRichnessOnTile * 0.2),  int(maxRichnessOnTile * 0.35),
+							int(maxRichnessOnTile * 0.5), int(maxRichnessOnTile * 0.6), int(maxRichnessOnTile * 0.75), int(maxRichnessOnTile * 0.9)]
+	for pos in positions.keys():
 		positions[pos].richnessThreshold = richnessThreshold
 		positions[pos].updateState()
-		#print("id %s : origin is %s and position is %s richness %s of threshold %s" %[id, origin, pos, richness, richnessThreshold])
-
 	pass
-
-
-##### Set a custom richness threshold instead of a static one
-##### [5%, 10%, 20%, 35%, 50%, 75%, 90%]
