@@ -5,6 +5,7 @@ const resourceClass = preload("res://classes/resourceClass.gd")
 const clusterClass = preload("res://classes/clusterClass.gd")
 
 # Waiting for these
+@onready var backgroundWallpaper: TileMapLayer = $backgroundWallpaper
 @onready var backgroundLayer: TileMapLayer = $background
 @onready var resourcesLayer: TileMapLayer = $resources
 @onready var hiddenResourcesLayer: TileMapLayer = $hiddenResources
@@ -33,6 +34,7 @@ func _ready() -> void:
 	
 	# Setting up layers 
 	backgroundLayer.z_index = -10
+	backgroundWallpaper.z_index = backgroundLayer.z_index - 1
 	resourcesLayer.z_index = backgroundLayer.z_index + 1
 	chunkOutline.z_index = resourcesLayer.z_index + 1
 	
@@ -96,6 +98,7 @@ func generateWorld(from: Vector2i, to: Vector2i) -> void:
 	# Generates chunks
 	# from is the top-left corner chunk, to is the bottom-right corner
 	generateResources_async(from, to)
+	generateBackgroundWallpaper_async(from,to)
 	for yChunk in range(from.y, to.y+1, 1):
 		for xChunk in range(from.x, to.x+1, 1):
 			# Checking if chunk is not already loaded
@@ -147,7 +150,6 @@ func generateResources_async(from: Vector2i, to: Vector2i) -> void:
 					var clusterPos = Vector2i(randi_range(0,15) + chunk.x * Globals.chunkSize, randi_range(0,15) + chunk.y *Globals.chunkSize)
 					var newCluster = clusterClass.new(clusterPos,id, radius)
 					var tilesCreated = newCluster.generateResources()
-					print("Generated cluster at %s with radius %s: %s tiles" % [clusterPos, radius, tilesCreated.size()])
 					updateMapFromClusterPlaced(newCluster)
 					for key in tilesCreated.keys():
 						hiddenResourcesLayer.set_cell(tilesCreated[key].position, tilesCreated[key].id, tilesCreated[key].sprite)
@@ -155,6 +157,25 @@ func generateResources_async(from: Vector2i, to: Vector2i) -> void:
 			pass
 	
 	pass
+
+func generateBackgroundWallpaper_async(from: Vector2i, to: Vector2i) -> void:
+	var loadDistance = clamp(Globals.loadedChunkDistance * 2, 20, 30)
+	var expandedFrom = Vector2i(from.x - loadDistance, from.y - loadDistance/2)
+	var expandedTo = Vector2i(to.x + loadDistance, to.y + loadDistance/2)
+	var textureSize = backgroundWallpaper.tile_set.get_tile_size()
+	var tilesToModifyX = range(expandedFrom.x * Globals.chunkSize, expandedTo.x * Globals.chunkSize, textureSize.x)
+	var tilesToModifyY = range(expandedFrom.y * Globals.chunkSize, expandedTo.y * Globals.chunkSize, textureSize.y)
+	var i = 0
+	for x in range(expandedFrom.x, expandedTo.x + 1):
+		for y in range(expandedFrom.y, expandedTo.y + 1):
+			i += 1
+			if i > 5 :
+				await get_tree().process_frame
+				i = 0
+			if backgroundWallpaper.get_cell_source_id(Vector2i(x,y)) != 0:
+				backgroundWallpaper.set_cell(Vector2i(x,y), 0, Vector2i(0,0))
+
+
 
 func isChunkGenerated(chunk: Vector2i) -> bool:
 	return generatedChunks.has(chunk)

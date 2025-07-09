@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://rfafd7f1v52k"]
+[gd_scene load_steps=9 format=3 uid="uid://rfafd7f1v52k"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_1n58j"]
 [ext_resource type="Texture2D" uid="uid://rd5yfdmqeuu3" path="res://assets/sprites/Derg 1024x1024.png" id="2_lg2gn"]
 [ext_resource type="TileSet" uid="uid://c56vpgauhrsp3" path="res://tilesets/background.tres" id="2_wn3gx"]
+[ext_resource type="TileSet" uid="uid://b07a0jbj2b5n7" path="res://tilesets/deflautWallpaper.tres" id="2_yscvf"]
 [ext_resource type="Script" path="res://scripts/playerCam.gd" id="3_av3pe"]
 [ext_resource type="TileSet" uid="uid://bcvf5i2tt5n2m" path="res://tilesets/chunkBorder.tres" id="3_w1uef"]
 [ext_resource type="TileSet" uid="uid://d3868p027sv8m" path="res://tilesets/resourcesOres.tres" id="4_7os5u"]
@@ -12,6 +13,9 @@
 
 [node name="layerHolder" type="Node2D" parent="."]
 script = ExtResource("4_uolhe")
+
+[node name="backgroundWallpaper" type="TileMapLayer" parent="layerHolder"]
+tile_set = ExtResource("2_yscvf")
 
 [node name="background" type="TileMapLayer" parent="layerHolder"]
 tile_set = ExtResource("2_wn3gx")

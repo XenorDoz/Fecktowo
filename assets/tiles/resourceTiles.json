@@ -33,5 +33,12 @@
 		"texture": "res://assets/tiles/resources/ironOre.png",
 		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
 		"tileAtlasSize" : [1.1]
+	},
+	{
+		"id": 5,
+		"name": "clay",
+		"texture": "res://assets/tiles/resources/clay.png",
+		"richnessThresold" : [50, 200, 500, 1000, 2000, 3000, 4000],
+		"tileAtlasSize" : [1.1]
 	}
 ]
