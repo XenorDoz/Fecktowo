@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c0dg0wkik1bm0"]
+
+[ext_resource type="StyleBox" uid="uid://bhm5y8mxuri38" path="res://assets/themes/StyleboxFlat/UIInventorySlotBackground.tres" id="1_f8qgi"]
+
+[resource]
+PanelContainer/styles/panel = ExtResource("1_f8qgi")

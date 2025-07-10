@@ -1,0 +1,91 @@
+[gd_scene load_steps=4 format=3 uid="uid://nvf6sgecsmy4"]
+
+[ext_resource type="Theme" uid="uid://vxvanw8017pj" path="res://assets/themes/UIBackground.tres" id="1_da3m2"]
+[ext_resource type="Theme" uid="uid://c4vsrkopylvdc" path="res://assets/themes/UIContainerBackground.tres" id="2_6aqxx"]
+[ext_resource type="LabelSettings" uid="uid://dr56d2vboqwom" path="res://assets/labels/UIInventoryPanels.tres" id="3_pw68u"]
+
+[node name="InventoryUI" type="CanvasLayer"]
+
+[node name="InventoryRoot" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainContainerBackground" type="PanelContainer" parent="InventoryRoot"]
+custom_minimum_size = Vector2(800, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -200.0
+offset_right = 400.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_da3m2")
+
+[node name="MarginContainer" type="MarginContainer" parent="InventoryRoot/MainContainerBackground"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MainContainer" type="HBoxContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InventoryPanelBackground" type="PanelContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_6aqxx")
+
+[node name="InventoryPanel" type="VBoxContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/InventoryPanelBackground"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/InventoryPanelBackground/InventoryPanel"]
+layout_mode = 2
+text = "Inventory
+"
+label_settings = ExtResource("3_pw68u")
+horizontal_alignment = 1
+
+[node name="InfoPanelBackground" type="PanelContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_6aqxx")
+
+[node name="InfoPanel" type="VBoxContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/InfoPanelBackground"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/InfoPanelBackground/InfoPanel"]
+layout_mode = 2
+text = "Informations"
+label_settings = ExtResource("3_pw68u")
+horizontal_alignment = 1
+
+[node name="CraftPanelBackground" type="PanelContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_6aqxx")
+
+[node name="CraftPanel" type="VBoxContainer" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/CraftPanelBackground"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InventoryRoot/MainContainerBackground/MarginContainer/MainContainer/CraftPanelBackground/CraftPanel"]
+layout_mode = 2
+text = "Crafting"
+label_settings = ExtResource("3_pw68u")
+horizontal_alignment = 1

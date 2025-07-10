@@ -3,7 +3,7 @@ extends Node
 # Forced parameters
 var chunkSize = 16 # Number of tiles in a chunk
 var tileSize = 16 # Size of a tile
-var defaultPlayerSpeed = 400 # Player speed while moving
+var defaultPlayerSpeed = 300 # Player speed while moving
 
 # Resources parameters
 var defaultMinRichness = 15000
