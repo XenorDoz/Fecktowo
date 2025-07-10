@@ -223,6 +223,7 @@ Voici tous le code que j'ai pour le moment :
 ## 8. Fichiers JSON
 
 ### `tiles/groundTiles.json`
+```json
 [
   {
     "id": 0,
@@ -232,8 +233,10 @@ Voici tous le code que j'ai pour le moment :
     "tileAtlasSize": [1.1]
   }
 ]
+```
 
 ### `tiles/resourceTiles.json`
+```json
 [
   {
     "id": 0,
@@ -272,7 +275,7 @@ Voici tous le code que j'ai pour le moment :
     "tileAtlasSize": [1.1]
   }
 ]
-
+```
 ---
 
 ## 9. Tilesets
